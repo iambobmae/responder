@@ -68,6 +68,7 @@ class API:
         cors=False,
         cors_params=DEFAULT_CORS_PARAMS,
         allowed_hosts=None,
+        **apispec_options
     ):
         self.background = BackgroundQueue()
 
@@ -153,6 +154,7 @@ class API:
         self.requests = (
             self.session()
         )  #: A Requests session that is connected to the ASGI app.
+        self._apispec_options = apispec_options
 
     @staticmethod
     def _default_wsgi_app(*args, **kwargs):
@@ -174,6 +176,7 @@ class API:
             version=self.version,
             openapi_version=self.openapi_version,
             plugins=[MarshmallowPlugin()],
+            **self._apispec_options
         )
 
         for route in self.routes:
